@@ -58,13 +58,19 @@ class Contrast : public ColorAugment {
                                .299, .587, .114, 0.0,
                                .299, .587, .114, 0.0,
                                .0,   .0,   .0,   1.0};
+    float temp[nDim*nDim];
     for (int i = 0; i < nDim - 1; ++i) {
       for (int j = 0; j < nDim; ++j) {
         float sum = 0;
         for (int k = 0; k < nDim; ++k) {
-            sum += const_mat[i * nDim + k] * matrix[k * nDim + j];
+          sum += const_mat[i * nDim + k] * matrix[k * nDim + j];
         }
-        matrix[i * nDim + j] = matrix[i * nDim + j] * contrast_ + sum * (1 - contrast_);
+        temp[i * nDim + j] = sum;
+      }
+    }
+    for (int i = 0; i < nDim - 1; ++i) {
+      for (int j = 0; j < nDim; ++j) {
+        matrix[i * nDim + j] = matrix[i * nDim + j] * contrast_ + temp[i * nDim + j] * (1 - contrast_);
       }
     }
   }
